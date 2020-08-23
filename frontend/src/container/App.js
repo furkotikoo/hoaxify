@@ -1,5 +1,4 @@
 import React from 'react';
-import ApiProgress from '../shared/ApiProgress';
 import UserSignupPage from '../pages/UserSignupPage';
 import LoginPage from '../pages/LoginPage';
 import LanguageSelector from '../components/LanguageSelector';
@@ -8,6 +7,7 @@ import UserPage from '../pages/UserPage';
 import { HashRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import TopBar from '../components/TopBar';
 import { useSelector } from 'react-redux';
+import MyFormPage from '../pages/MyFormPage';
 
 const App = () => {
 
@@ -22,6 +22,7 @@ const App = () => {
           {!isLoggedIn && (<Route path="/login" component={LoginPage}></Route>)}
           <Route path="/signup" component={UserSignupPage}></Route>
           <Route path="/user/:username" component={UserPage}></Route>
+          <Route path="/formpage" component={MyFormPage}></Route>
           <Redirect to="/" />
         </Switch>
       </Router>

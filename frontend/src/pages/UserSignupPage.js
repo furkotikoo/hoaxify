@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { signup } from '../api/apiCalls';
-import Input from '../components/input';
+import React, { useState } from "react";
+import Input from '../components/Input';
 import { useTranslation } from 'react-i18next';
 import ButtonWithProgress from '../components/ButtonWithProgress';
 import { useApiProgress } from "../shared/ApiProgress";
@@ -51,8 +50,8 @@ const UserSignupPage = (props) => {
 
     const { t } = useTranslation();
 
-    const pendingApiCallSignup = useApiProgress('/api/1.0/users');
-    const pendingApiCallLogin = useApiProgress('/api/1.0/auth');
+    const pendingApiCallSignup = useApiProgress('post', '/api/1.0/users');
+    const pendingApiCallLogin = useApiProgress('post', '/api/1.0/auth');
 
     const pendingApiCall = pendingApiCallSignup || pendingApiCallLogin;
 

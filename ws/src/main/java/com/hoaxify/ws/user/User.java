@@ -1,11 +1,16 @@
 package com.hoaxify.ws.user;
 
 import java.util.Collection;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -16,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.hoaxify.ws.hoax.Hoax;
 
 import lombok.Data;
 
@@ -29,7 +35,7 @@ public class User implements UserDetails{
 	private static final long serialVersionUID = -8421768845853099274L;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
 	@NotNull(message = "{hoaxify.constraint.username.NotNull.message}")
@@ -37,7 +43,6 @@ public class User implements UserDetails{
 	@UniqueUsername
 	private String username;
 	
-	@NotNull
 	@Size(min = 4, max = 255)
 	private String displayName;
 	
@@ -48,6 +53,9 @@ public class User implements UserDetails{
 	private String password;
 	
 	private String image;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+	private List<Hoax> hoaxes;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

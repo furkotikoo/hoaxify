@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export const useApiProgress = (apiPath) => {
+export const useApiProgress = (apiMethod, apiPath, strictPath) => {
     const [pendingApiCall, setPendingApiCall] = useState(false);
 
     useEffect(() => {
 
         let requestInterceptor, responseInterceptor;
 
-        const updateApiCallFor = (url, inProgress) => {
-            if (url.startsWith(apiPath)) {
+        const updateApiCallFor = (method, url, inProgress) => {
+            if (method !== apiMethod) {
+                return;
+            }
+            if (strictPath && url === apiPath) {
+                setPendingApiCall(inProgress);
+            } else if (!strictPath && url.startsWith(apiPath)) {
                 setPendingApiCall(inProgress);
             }
         }
@@ -22,17 +27,20 @@ export const useApiProgress = (apiPath) => {
         const registerInterceptors = () => {
             requestInterceptor = axios.interceptors.request.use(
                 (request) => {
-                    updateApiCallFor(request.url, true);
+                    const { method, url } = request;
+                    updateApiCallFor(method, url, true);
                     return request; // axios un bu requesti devam ettirmesi için request i return ettiriyoruz..
                 });
 
             responseInterceptor = axios.interceptors.response.use(
                 (response) => {
-                    updateApiCallFor(response.config.url, false);
+                    const { method, url } = response.config;
+                    updateApiCallFor(method, url, false);
                     return response;
                 },
                 (error) => {
-                    updateApiCallFor(error.config.url, false);
+                    const { method, url } = error.config;
+                    updateApiCallFor(method, url, false);
                     throw error;
                 }
             );
@@ -44,7 +52,7 @@ export const useApiProgress = (apiPath) => {
             unRegisterInterceptors();
         }
 
-    }, [apiPath]);
+    }, [apiPath, apiMethod, strictPath]);
 
     return pendingApiCall;
 }

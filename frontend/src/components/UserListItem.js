@@ -1,5 +1,4 @@
 import React from 'react';
-import defaultPicture from '../assets/profile.png';
 import { Link } from 'react-router-dom';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 

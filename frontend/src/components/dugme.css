@@ -1,0 +1,10 @@
+.dugme-dis:hover {}
+
+.dugme-ic {
+    border: 1px solid #d3d3d3;
+    padding-top: 15px;
+    margin: 5px 5px;
+    border-radius: 10px;
+    background-color: #f7f7f7;
+    box-shadow: 0 0 10px darkgray;
+}

@@ -11,9 +11,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +26,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationEn
 import com.hoaxify.ws.auth.UserAuthService;
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	
 	@Autowired
@@ -35,10 +38,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 		
 		http.httpBasic().authenticationEntryPoint(new AuthEntryPoint());
 		
+		http.headers().frameOptions().disable();
+		
 		http
-		.authorizeRequests().antMatchers(HttpMethod.POST, "/api/1.0/auth").authenticated()
+		.authorizeRequests()
+		.antMatchers(HttpMethod.POST, "/api/1.0/auth").authenticated()
+		.antMatchers(HttpMethod.PUT, "/api/1.0/users/{username}").authenticated()
+		.antMatchers(HttpMethod.POST, "/api/1.0/hoaxes").authenticated()
+		.antMatchers(HttpMethod.POST, "/api/1.0/hoax-attachments").authenticated()
 		.and()
 		.authorizeRequests().anyRequest().permitAll();
+		
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 	
 	@Override
